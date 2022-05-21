@@ -1,14 +1,14 @@
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import React, { useState, useEffect } from 'react';
-import AppContext from './global/AppContext';
+import React, { useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import AppContext from './global/AppContext.tsx';
 
-import useCachedResources from './hooks/useCachedResources';
-import useColorScheme from './hooks/useColorScheme';
-import Navigation from './navigation';
+import useCachedResources from './hooks/useCachedResources.ts';
+import useColorScheme from './hooks/useColorScheme.ts';
+import Navigation from './navigation/index.tsx';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -22,59 +22,43 @@ export default function App() {
   const [password, setPassword] = useState('');
   const [nickname, setNickname] = useState('Remote');
 
+  async function getValueFor() {
+    setHost(await SecureStore.getItemAsync('host'));
+    setPort(await SecureStore.getItemAsync('port'));
+    setUsername(await SecureStore.getItemAsync('username'));
+    setPassword(await SecureStore.getItemAsync('passwordRes'));
+    setSsl(await SecureStore.getItemAsync('ssl'));
+    setLoading(false);
+  }
 
-async function getValueFor() {
-  let host = await SecureStore.getItemAsync('host');
-  setHost(host);
+  getValueFor();
 
-  let port = await SecureStore.getItemAsync('port');
-  setPort(port);
- let username = await SecureStore.getItemAsync('username');
-  setUsername(username);
-
- let passwordRes = await SecureStore.getItemAsync('passwordRes');
-  setPassword(passwordRes);
-
- let ssl = await SecureStore.getItemAsync('ssl');
-  setSsl(ssl);
-
-  setLoading(false)
-}
-
-
- getValueFor();
-
-
-const userSettings = {
-    host: host,
-    port: port,
-    ssl: ssl,
-    username: username,
-    nickname: nickname,
-    password: password,
+  const userSettings = {
+    host,
+    port,
+    ssl,
+    username,
+    nickname,
+    password,
     setHost,
     setPort,
     setSsl,
     setUsername,
     setPassword,
-    setNickname
+    setNickname,
   };
 
-if (!loading) {
-  if (!isLoadingComplete) {
-    return null;
-  } else {
+  if (!loading && isLoadingComplete) {
     return (
       <AppContext.Provider value={userSettings}>
-  
+
       <SafeAreaProvider>
         <Navigation colorScheme={colorScheme} />
         <StatusBar />
-      </SafeAreaProvider> 
+      </SafeAreaProvider>
       </AppContext.Provider>
     );
   }
-  } else {
-    return null
-  }
+
+  return null;
 }

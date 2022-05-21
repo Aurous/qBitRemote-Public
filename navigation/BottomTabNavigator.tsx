@@ -8,15 +8,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { useNavigation } from '@react-navigation/native';
-import React, { useState, useEffect, useContext  } from 'react';
+import React, { useContext } from 'react';
 import AppContext from '../global/AppContext'
-
-
-import { Text, View } from '../components/Themed';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import NotFoundScreen from '../screens/NotFoundScreen';
 import TabOneScreen from '../screens/TabOneScreen';
 import InfoScreen from '../screens/InfoScreen';
 import HostScreen from '../screens/HostScreen';
@@ -34,7 +30,8 @@ export default function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       initialRouteName="TabOne"
-      tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}>
+      screenOptions={{ activeTintColor: Colors[colorScheme].tint }}
+    >
       <BottomTab.Screen
         name="Server"
         component={TabOneNavigator}
@@ -62,12 +59,6 @@ function TabBarIcon(props: { name: React.ComponentProps<typeof Ionicons>['name']
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
 const TabOneStack = createStackNavigator<TabOneParamList>();
-
-
-
-
-
-
 
 function TabOneNavigator() {
 
@@ -114,7 +105,7 @@ function TabTwoNavigator() {
         name="HostScreen"
         component={HostScreen}
         options={{ headerTitle: 'Add Host' }}
-      />
+       />
     </TabTwoStack.Navigator>
   );
 }
